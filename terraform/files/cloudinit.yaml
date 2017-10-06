@@ -1,0 +1,12 @@
+#cloud-config
+fqdn: ${fqdn}
+
+system_info:
+  default_user:
+    name: ${username}
+
+write_files:
+- content: |
+    BLACKBOX_PASSWORD_HASH='${password_hash}'
+  path: /etc/sysconfig/haproxy
+  owner: haproxy:haproxy

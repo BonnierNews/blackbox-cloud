@@ -1,0 +1,18 @@
+[Unit]
+Description=Blackbox exporter for Prometheus
+Documentation=http://github.com/prometheus/blackbox_exporter
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=blackbox_exporter
+Group=blackbox_exporter
+EnvironmentFile=-/etc/sysconfig/blackbox_exporter
+ExecStart=/usr/bin/blackbox_exporter $CMD_OPTS
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=on-failure
+RestartSec=5
+KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target

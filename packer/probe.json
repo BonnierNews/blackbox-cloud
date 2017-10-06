@@ -1,0 +1,52 @@
+{
+  "variables": {
+    "aws_access_key": "",
+    "aws_secret_key": "",
+    "aws_build_region": "eu-west-1",
+
+    "blackbox_version": "0.9.1"
+  },
+  "builders": [{
+    "type": "amazon-ebs",
+    "access_key": "{{user `aws_access_key`}}",
+    "secret_key": "{{user `aws_secret_key`}}",
+    "region": "{{user `aws_build_region`}}",
+
+    "source_ami_filter": {
+      "filters": {
+        "virtualization-type": "hvm",
+        "name": "CentOS Linux 7 x86_64 *",
+        "root-device-type": "ebs"
+      },
+      "owners": ["679593333241"],
+      "most_recent": true
+    },
+
+    "ami_name": "blackbox-cloud/{{user `blackbox_version`}}/{{isotime \"20060102-150405\"}}",
+    "ami_regions": ["eu-central-1","eu-west-1","eu-west-2","us-east-2","us-west-1","ap-northeast-2","sa-east-1"],
+    "instance_type": "t2.micro",
+
+    "ssh_username": "centos",
+    "ssh_pty": "true"
+  }],
+  "provisioners": [
+    {
+      "type": "file",
+      "source": "files",
+      "destination": "/tmp/packer-uploads"
+    },
+    {
+      "type": "shell",
+      "execute_command": "{{ .Vars }} sudo -E -S /bin/sh -e -x '{{ .Path }}'",
+      "environment_vars": [
+          "PACKER_FILES_DIR=/tmp/packer-uploads/",
+          "BLACKBOX_VERSION={{user `blackbox_version`}}"
+      ],
+      "scripts": [
+        "scripts/move-uploaded-files.sh",
+        "scripts/provision.sh",
+        "scripts/cleanup.sh"
+      ]
+    }
+  ]
+}
