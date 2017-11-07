@@ -4,7 +4,7 @@
     "aws_secret_key": "",
     "aws_build_region": "eu-west-1",
 
-    "blackbox_version": "0.9.1"
+    "blackbox_version": "0.10.0"
   },
   "builders": [{
     "type": "amazon-ebs",
