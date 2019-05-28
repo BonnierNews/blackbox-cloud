@@ -1,7 +1,8 @@
 data "aws_ami" "blackbox_ami" {
   provider   = "aws.selected_region"
   most_recent = true
-
+  owners = ["self"]
+  
   filter {
     name   = "name"
     values = ["blackbox-cloud/${var.blackbox_version}/*"]
